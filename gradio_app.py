@@ -181,12 +181,12 @@ theme = gr.themes.Base(
     font=[gr.themes.GoogleFont("Inter"), "sans-serif"]
 )
 
-with gr.Blocks(theme=theme, css=css, title="AI Studio") as demo:
+with gr.Blocks(title="AI Studio") as demo:
     gr.Markdown("# 🎨 AI Video Studio", elem_id="header")
     
     with gr.Row():
         with gr.Column(scale=2):
-            webcam_input = gr.Image(sources=["webcam"], streaming=True, label="Input Feed")
+            webcam_input = gr.Image(sources=["webcam"], label="Input Feed")
         with gr.Column(scale=2):
             webcam_output = gr.Image(label="Processed Output")
     
@@ -281,10 +281,10 @@ with gr.Blocks(theme=theme, css=css, title="AI Studio") as demo:
             gr.Markdown(vram_table)
     
     with gr.Row():
-        btn_stop = gr.Button("Stop All Backends", variant="stop")
+        btn_stop = gr.Button("Stop All Backends", variant="secondary")
         btn_stop.click(stop_backend, outputs=status_out_afy)
 
     webcam_input.stream(process_frame, inputs=webcam_input, outputs=webcam_output, stream_every=0.04)
 
 if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0", server_port=7860)
+    demo.launch(server_name="0.0.0.0", server_port=7860, theme=theme, css=css)
