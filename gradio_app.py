@@ -31,7 +31,7 @@ def start_avatarify_backend(mode, enhance):
     for _ in range(40):
         try:
             time.sleep(1)
-            resp = requests.post('http://127.0.0.1:8001/init', json={"mode": mode, "enhance": enhance}, timeout=2)
+            resp = requests.post('http://127.0.0.1:8001/init', json={"mode": mode, "enhance": enhance}, timeout=60)
             if resp.status_code == 200:
                 data = resp.json()
                 avatar_list = data.get("avatars", [])
@@ -62,7 +62,7 @@ def start_fluxrt_backend(use_int8, use_reference, lora_weights):
                 "use_int8": use_int8,
                 "use_reference": use_reference,
                 "lora_weights": lora_weights if lora_weights != "None" else None
-            }, timeout=2)
+            }, timeout=60)
             if resp.status_code == 200:
                 return "FluxRT Backend Started!"
         except Exception as e:
