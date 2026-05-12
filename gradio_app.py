@@ -19,7 +19,7 @@ def start_avatarify_backend(mode, enhance):
         backend_process.terminate()
         backend_process.wait()
     
-    python_exe = os.path.join(os.path.dirname(__file__), '..', 'env', 'Scripts', 'python.exe')
+    python_exe = os.path.join(os.path.dirname(__file__), 'env', 'Scripts', 'python.exe')
     if not os.path.exists(python_exe):
         python_exe = 'python'
         
