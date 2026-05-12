@@ -1,0 +1,31 @@
+vox-adv-cpk.pth.tar
+*.log
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore inner repositories to prevent pushing them to this parent repo
+fluxRT/
+face-animation/
+fomm/
+
+# Environments
+env/
+venv/
+
+# Caches
+*cache*/
+.pytest_cache/
+
+# Large Models
+*.pth
+*.pt
+*.tar
+*.safetensors
+*.onnx
+*.engine
+*.ckpt
+*.bin
+*.h5
+*.pb
