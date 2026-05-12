@@ -287,4 +287,4 @@ with gr.Blocks(title="AI Studio") as demo:
     webcam_input.stream(process_frame, inputs=webcam_input, outputs=webcam_output, stream_every=0.04)
 
 if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0", server_port=7860, theme=theme, css=css)
+    demo.launch(server_name="127.0.0.1", server_port=7860, theme=theme, css=css)
