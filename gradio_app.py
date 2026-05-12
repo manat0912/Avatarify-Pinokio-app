@@ -28,7 +28,7 @@ def start_avatarify_backend(mode, enhance):
     active_backend = 'avatarify'
     
     # Wait for server to start
-    for _ in range(10):
+    for _ in range(40):
         try:
             time.sleep(1)
             resp = requests.post('http://127.0.0.1:8001/init', json={"mode": mode, "enhance": enhance}, timeout=2)
@@ -55,7 +55,7 @@ def start_fluxrt_backend(use_int8, use_reference, lora_weights):
     active_backend = 'fluxrt'
     
     # Wait for server to start
-    for _ in range(10):
+    for _ in range(40):
         try:
             time.sleep(2)
             resp = requests.post('http://127.0.0.1:8002/init', json={
@@ -181,7 +181,22 @@ theme = gr.themes.Base(
     font=[gr.themes.GoogleFont("Inter"), "sans-serif"]
 )
 
-with gr.Blocks(title="AI Studio") as demo:
+custom_js = """
+function() {
+    document.addEventListener('keydown', function(e) {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        if (e.key === 'ArrowLeft') {
+            const btn = document.querySelector('#btn_ava_prev');
+            if(btn) btn.click();
+        } else if (e.key === 'ArrowRight') {
+            const btn = document.querySelector('#btn_ava_next');
+            if(btn) btn.click();
+        }
+    });
+}
+"""
+
+with gr.Blocks(title="AI Studio", js=custom_js) as demo:
     gr.Markdown("# 🎨 AI Video Studio", elem_id="header")
     
     with gr.Row():
@@ -205,8 +220,10 @@ with gr.Blocks(title="AI Studio") as demo:
                 btn_z_out = gr.Button("Zoom Out (S)")
             
             with gr.Row():
-                ava_drop = gr.Dropdown(choices=[], label="Select Avatar")
-                btn_ava_refresh = gr.Button("Refresh Avatars")
+                btn_ava_prev = gr.Button("⬅️", elem_id="btn_ava_prev", scale=1)
+                ava_drop = gr.Dropdown(choices=[], label="Select Avatar", scale=4)
+                btn_ava_next = gr.Button("➡️", elem_id="btn_ava_next", scale=1)
+                btn_ava_refresh = gr.Button("Refresh", scale=2)
             
             status_out_afy = gr.Textbox(label="Status", interactive=False)
             
@@ -224,6 +241,19 @@ with gr.Blocks(title="AI Studio") as demo:
                 if active_backend == 'avatarify':
                     return gr.update(choices=avatar_list)
                 return gr.update()
+            
+            def next_avatar(current):
+                if not avatar_list: return gr.update()
+                idx = avatar_list.index(current) if current in avatar_list else -1
+                return avatar_list[(idx + 1) % len(avatar_list)]
+
+            def prev_avatar(current):
+                if not avatar_list: return gr.update()
+                idx = avatar_list.index(current) if current in avatar_list else 0
+                return avatar_list[(idx - 1) % len(avatar_list)]
+
+            btn_ava_next.click(next_avatar, inputs=ava_drop, outputs=ava_drop)
+            btn_ava_prev.click(prev_avatar, inputs=ava_drop, outputs=ava_drop)
             
             btn_ava_refresh.click(update_avatar_dropdown, outputs=ava_drop)
             ava_drop.change(lambda x: afy_control('change_avatar', avatar_list.index(x) if x in avatar_list else 0), inputs=ava_drop)
